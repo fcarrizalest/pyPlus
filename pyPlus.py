@@ -32,10 +32,10 @@ KVSessionExtension(store, app)
 
 
 # Email of the Service Account.
-SERVICE_ACCOUNT_EMAIL = '464235206596-l8h7irh5drhrmqqbugaj4atrmnurhm3c@developer.gserviceaccount.com'
+SERVICE_ACCOUNT_EMAIL = '@developer.gserviceaccount.com'
 
 # Path to the Service Account's Private Key file.
-SERVICE_ACCOUNT_PKCS12_FILE_PATH = '0ab8bdfaa0f13511e3d404377a363ae160eca697-privatekey.p12'
+SERVICE_ACCOUNT_PKCS12_FILE_PATH = '-privatekey.p12'
 
 def createDriveService():
   """Builds and returns a Drive service object authorized with the given service account.
@@ -64,11 +64,20 @@ def index():
 	return response
 
 
+@app.route('/activity/<id>')
+def activity(id):
+	service = createDriveService()
+	activities_resource = service.activities()
+	activity = activities_resource.get( activityId=id).execute()
+	response = make_response( json.dumps(activity) , 200)
+	response.headers['Content-Type'] = 'application/json'
+	return  response
+
 @app.route('/activities/<id>' )
 def activities_user(id):
 	service = createDriveService()
 	activities_resource = service.activities()
-	request = activities_resource.list( userId=id, collection='public')
+	request = activities_resource.list( userId=id, maxResults= 100 , collection='public')
 	activities_document = request.execute()
 
 	response = make_response( json.dumps(activities_document) , 200)
@@ -81,7 +90,7 @@ def search_user(search):
 
 	service = createDriveService()
 	people_resource = service.people()
-	people_document = people_resource.search(  maxResults = 10 , query=search  ) . execute()
+	people_document = people_resource.search(  maxResults = 50 , query=search  ) . execute()
 
 	response = make_response( json.dumps(people_document) , 200)
 	response.headers['Content-Type'] = 'application/json'

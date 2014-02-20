@@ -19,7 +19,17 @@ define([
 		    },
 		    render: function(){
 		    		$(this.el).html (  Mustache.to_html( pTemplate , this.model.toJSON())  );
-		    
+		    		
+
+		    		$(this.el).addClass("activityRow");
+
+		    		console.log("Render activityView ");
+		    		console.log(this.model);
+
+		    		this.model.fetch();
+		    			
+
+
 		    	return this;
 		    }
 

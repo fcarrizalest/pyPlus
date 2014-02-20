@@ -3,12 +3,13 @@ define([
 	'backbone',
 	], function( _, Backbone ){
 
-		var activityModel = Backbone.Model.extend({
+		var commentModel = Backbone.Model.extend({
 
 			defaults: {  
 
 				title:null,
-				
+				published:null,
+				updated:null,
 				url:null,
 				
 
@@ -19,7 +20,7 @@ define([
 		});
 
 
-		return activityModel;
+		return commentModel;
 
 
 

@@ -9,7 +9,7 @@ define([
 			var peopleView = Backbone.View.extend( { 
 
 					events: {
-		      
+		       
 		  			},
 		  
 		  			initialize: function(){	
