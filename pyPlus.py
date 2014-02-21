@@ -73,11 +73,22 @@ def activity(id):
 	response.headers['Content-Type'] = 'application/json'
 	return  response
 
+
+@app.route('/activity/<id>/comments')
+def activity_comments(id):
+	service = createDriveService()
+	comments_resource = service.comments()
+	comments_document = comments_resource.list( maxResults=100,activityId=id).execute()
+
+	response = make_response( json.dumps(comments_document) , 200)
+	response.headers['Content-Type'] = 'application/json'
+	return  response
+
 @app.route('/activities/<id>' )
 def activities_user(id):
 	service = createDriveService()
 	activities_resource = service.activities()
-	request = activities_resource.list( userId=id, maxResults= 100 , collection='public')
+	request = activities_resource.list( userId=id, maxResults= 23 , collection='public')
 	activities_document = request.execute()
 
 	response = make_response( json.dumps(activities_document) , 200)

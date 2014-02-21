@@ -11,7 +11,8 @@ define([
 				published:null,
 				updated:null,
 				url:null,
-				
+				actor:null,
+				object:null,
 
 			}, 
 			url : function() {
