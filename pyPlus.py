@@ -18,6 +18,7 @@ from flaskext.kvsession import KVSessionExtension
 from apiclient.discovery import build
 from oauth2client.client import SignedJwtAssertionCredentials
 
+from apiclient.http import MediaFileUpload
 
 APPLICATION_NAME = 'Google+ Python Quickstart'
 
@@ -37,8 +38,26 @@ SERVICE_ACCOUNT_EMAIL = '@developer.gserviceaccount.com'
 # Path to the Service Account's Private Key file.
 SERVICE_ACCOUNT_PKCS12_FILE_PATH = '-privatekey.p12'
 
-def createDriveService():
+
+def createDriveServices():
   """Builds and returns a Drive service object authorized with the given service account.
+
+  Returns:
+    Drive service object.
+  """
+  f = file(SERVICE_ACCOUNT_PKCS12_FILE_PATH, 'rb')
+  key = f.read()
+  f.close()
+
+  credentials = SignedJwtAssertionCredentials(SERVICE_ACCOUNT_EMAIL, key,
+      scope='https://www.googleapis.com/auth/drive')
+  http = httplib2.Http()
+  http = credentials.authorize(http)
+
+  return build('drive', 'v2', http=http)
+
+def createDriveService():
+  """Builds and returns a Drive service object authorized with the given service  account.
 
   Returns:
     Drive service object.
@@ -53,6 +72,82 @@ def createDriveService():
 
   return build('plus', 'v1', http = http)
 
+def retrieve_all_files(service):
+  """Retrieve a list of File resources.
+
+  Args:
+    service: Drive API service instance.
+  Returns:
+    List of File resources.
+  """
+  result = []
+  page_token = None
+  while True:
+    try:
+      param = {}
+      if page_token:
+        param['pageToken'] = page_token
+      files = service.files().list(**param).execute()
+
+      result.extend(files['items'])
+      page_token = files.get('nextPageToken')
+      if not page_token:
+        break
+    except errors.HttpError, error:
+      print 'An error occurred: %s' % error
+      break
+  return result
+
+def delete_file(service, file_id):
+  """Permanently delete a file, skipping the trash.
+
+  Args:
+    service: Drive API service instance.
+    file_id: ID of the file to delete.
+  """
+  try:
+    service.files().delete(fileId=file_id).execute()
+  except errors.HttpError, error:
+    print 'An error occurred: %s' % error
+
+
+def insert_file(service, title, description, parent_id, mime_type, filename):
+  """Insert new file.
+
+  Args:
+    service: Drive API service instance.
+    title: Title of the file to insert, including the extension.
+    description: Description of the file to insert.
+    parent_id: Parent folder's ID.
+    mime_type: MIME type of the file to insert.
+    filename: Filename of the file to insert.
+  Returns:
+    Inserted file metadata if successful, None otherwise.
+  """
+  media_body = MediaFileUpload(filename, mimetype=mime_type, resumable=True)
+  body = {
+    'title': title,
+    'description': description,
+    'mimeType': mime_type
+  }
+  # Set the parent folder.
+  if parent_id:
+    body['parents'] = [{'id': parent_id}]
+
+  try:
+    file = service.files().insert(
+        body=body,
+        media_body=media_body).execute()
+
+    # Uncomment the following line to print the File ID
+    # print 'File ID: %s' % file['id']
+
+    return file
+  except errors.HttpError, error:
+    print 'An error occured: %s' % error
+    return None
+
+
 @app.route('/', methods=['GET'])
 def index():
 
@@ -61,6 +156,33 @@ def index():
 
 
 
+	return response
+
+
+@app.route('/drive')
+def drive():
+
+	services = createDriveServices()
+	listFiles = retrieve_all_files(services)
+	if len(listFiles)  == 0:
+	    print "nada"
+	    print listFiles
+	    title = "data.json" 
+	    description = "descriptio"
+	    parent_id = "root"
+	    mime_type = "application/json"
+	    filename = "data.json"
+	    insert_file(services, title, description, parent_id, mime_type, filename)
+	else:
+		print "Encontre archivos "
+		print len(listFiles)
+
+
+
+
+	 
+
+	response = make_response(render_template('indexdrive.html') )
 	return response
 
 
