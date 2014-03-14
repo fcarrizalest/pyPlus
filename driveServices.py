@@ -1,9 +1,3 @@
-import json
-import pprint
-import random
-import string
-import sys
-
 from apiclient.discovery import build
 from apiclient.http import MediaFileUpload
 import httplib2
@@ -31,6 +25,7 @@ class DriveServices:
 			body['parents'] = [{'id': parent_id}]
 		try:
 			fileT = service.files().insert(body=body,media_body=media_body).execute()
+			
 			return fileT
 		except errors.HttpError, error:
 			print 'An error occured: %s' % error

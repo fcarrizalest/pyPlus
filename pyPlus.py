@@ -5,12 +5,11 @@ import string
 import sys
 
 from apiclient.discovery import build
-from apiclient.http import MediaFileUpload
 from flask import Flask
 from flask import make_response
 from flask import render_template
 from flask import request
-from flask import session
+from flask import session 
 import httplib2
 from oauth2client.client import SignedJwtAssertionCredentials
 from simplekv.memory import DictStore
@@ -23,7 +22,8 @@ APPLICATION_NAME = 'Google Python Quickstart'
 
 app = Flask(__name__)
 
-# See the simplekv documentation for details
+
+# See the simplekv docume ntation for details
 store = DictStore()
 
 
@@ -91,31 +91,31 @@ def drive():
 	return response
 
 
-@app.route('/activity/<id>')
-def activity(id):
+@app.route('/activity/<idA>')
+def activity(idA):
 	service = createDriveService()
 	activities_resource = service.activities()
-	activity = activities_resource.get( activityId=id).execute()
+	activity = activities_resource.get( activityId=idA).execute()
 	response = make_response( json.dumps(activity) , 200)
 	response.headers['Content-Type'] = 'application/json'
 	return  response
 
 
 @app.route('/activity/<id>/comments')
-def activity_comments(id):
+def activity_comments(idC):
 	service = createDriveService()
 	comments_resource = service.comments()
-	comments_document = comments_resource.list( maxResults=100,activityId=id).execute()
+	comments_document = comments_resource.list( maxResults=100,activityId=idC).execute()
 
 	response = make_response( json.dumps(comments_document) , 200)
 	response.headers['Content-Type'] = 'application/json'
 	return  response
 
 @app.route('/activities/<id>' )
-def activities_user(id):
+def activities_user(idA):
 	service = createDriveService()
 	activities_resource = service.activities()
-	request = activities_resource.list( userId=id, maxResults= 23 , collection='public')
+	request = activities_resource.list( userId=idA, maxResults= 23 , collection='public')
 	activities_document = request.execute()
 
 	response = make_response( json.dumps(activities_document) , 200)
