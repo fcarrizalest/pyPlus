@@ -1,8 +1,9 @@
+from apiclient import errors
 from apiclient.discovery import build
 from apiclient.http import MediaFileUpload
 import httplib2
 from oauth2client.client import SignedJwtAssertionCredentials
-from apiclient import errors
+
 
 class DriveServices:
 
@@ -11,13 +12,12 @@ class DriveServices:
 		key = f.read()
 		f.close()
 
-		credentials = SignedJwtAssertionCredentials(SERVICE_ACCOUNT_EMAIL, key,
-													scope='https://www.googleapis.com/auth/drive')
+		credentials = SignedJwtAssertionCredentials(SERVICE_ACCOUNT_EMAIL, key,scope='https://www.googleapis.com/auth/drive')
 		http = httplib2.Http()
 		http = credentials.authorize(http)
 
 		return build('drive', 'v2', http=http)
-	
+
 	def insert_file(self , service, title, description, parent_id, mime_type, filename):
 		media_body = MediaFileUpload(filename, mimetype=mime_type, resumable=True)
 		body = {'title': title,'description': description,'mimeType': mime_type}
@@ -25,7 +25,7 @@ class DriveServices:
 			body['parents'] = [{'id': parent_id}]
 		try:
 			fileT = service.files().insert(body=body,media_body=media_body).execute()
-			
+
 			return fileT
 		except errors.HttpError, error:
 			print 'An error occured: %s' % error
@@ -57,17 +57,17 @@ class DriveServices:
 				param = {}
 				if page_token:
 					param['pageToken'] = page_token
-					files = service.files().list(**param).execute()
-					result.extend(files['items'])
-					page_token = files.get('nextPageToken')
-					if not page_token:
-						break
+				files = service.files().list(**param).execute()
+				result.extend(files['items'])
+				page_token = files.get('nextPageToken')
+				if not page_token:
+					break
 			except errors.HttpError, error:
 				print 'An error occurred: %s' % error
 				break
 		return result
-	
-	
+
+
 	def print_files_in_folder(self, service, folder_id):
 		page_token = None
 		while True:

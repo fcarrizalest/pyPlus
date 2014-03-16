@@ -3,13 +3,15 @@ define([
   'jquery',
   'underscore',
   'backbone',
-  'views/home/homeView'
+  'views/home/homeView',
+  'views/admin/homeView'
 
-], function($, _, Backbone, HomeView ,homeView) {
+], function($, _, Backbone, HomeView ,admin) {
   
   var AppRouter = Backbone.Router.extend({
     routes: {
     
+      'admin' : 'adminHome',
       // Default
       '*actions': 'defaultAction'
     }
@@ -27,6 +29,14 @@ define([
         var homeView = new HomeView();
         homeView.render();     
     });
+
+    app_router.on( 'route:adminHome' , function(actions){
+
+
+        var homeview = new admin();
+        homeview.render();
+
+    } );
 
     // Unlike the above, we don't call render on this view as it will handle
     // the render call internally after it loads data. Further more we load it
