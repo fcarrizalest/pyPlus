@@ -17,6 +17,20 @@
 
 <a href="#"> Home </a><br><br>
 <a href="#admin"> Administracion </a><br><br>
+
+
+<form method="POST" action="/api/issues/">
+    {{ form.csrf_token }}
+    {{ form.name.label }} {{ form.name(size=20) }}
+    {{ form.description.label }} {{ form.description(size=200) }}
+     {{ form.order.label }} {{ form.order(size=10) }}
+
+    <input type="submit" value="">
+</form>
+
+
+
+
 <div id="page">
 Loading...
 

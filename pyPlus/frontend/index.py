@@ -1,8 +1,8 @@
-import redis
 from flask import Blueprint, render_template
+import redis
 
 from . import route
-
+from ..forms import NewIssueForm
 
 bp = Blueprint('index', __name__)
 
@@ -10,5 +10,6 @@ bp = Blueprint('index', __name__)
 def index():
     r = redis.StrictRedis(host='localhost', port=6379, db=0)
     r.set('foo', 'bar')
+    form = NewIssueForm()
 
-    return render_template('index.html')
+    return render_template('index.html' , form = form)

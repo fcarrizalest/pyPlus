@@ -5,3 +5,7 @@ data.json
 *.pydevproject
 
 .pydevproject
+
+*.pyc
+
+*.pyc
