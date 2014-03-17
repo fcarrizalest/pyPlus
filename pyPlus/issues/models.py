@@ -72,7 +72,8 @@ class Issue(ProductJsonSerializer):
 
         driveServices = DriveServices()
 
-        driveServices.update_folder(self.id, self.name, self.description)
+        aa = driveServices.update_folder(self.id, self.name, self.description)
+        print aa
         r.hset("issue", self.id, json.dumps(self.to_json()))
 
         return self

@@ -23,12 +23,24 @@ def create():
         print request.form.to_dict()
         return issues.create(**request.form.to_dict())
 
+@route(bp, '/<issue_id>', methods=['PUT'])
+def update(issue_id):
+    """Updates a product. Returns the updated product instance."""
+
+    print "vv"
+
+    form = UpdateIssueForm(csrf_enabled=False)
+
+    print form.validate_on_submit()
+    if form.validate_on_submit():
+        return issues.update(issues.get(issue_id), **request.json)
 
 
 
-@route(bp, '/<issue_id>')
+@route(bp, '/<issue_id>', methods=['GET'])
 def show(issue_id):
     """Returns a product instance."""
+    print "vvaaaa"
     return issues.get(issue_id)
 
 

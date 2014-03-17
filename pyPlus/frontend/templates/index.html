@@ -2,13 +2,14 @@
 <html>
 <head>
   <title>Pruebas Con BackBone</title>
-<meta name="description" content="">
-  <meta name="author" content="fcarrizalest">
+	<meta name="description" content="">
+  	<meta name="author" content="fcarrizalest">
+	{% assets "css_all" %}
+      <link rel="stylesheet" href="{{ ASSET_URL }}"/>
+    {% endassets %}
 
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-	{% assets "css_all" -%}
-      <link rel="stylesheet" href="{{ ASSET_URL }}">
-    {%- endassets %}
+  	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<meta name="csrf_token" content="{{ csrf_token() }}" />
 </head>
 <body>
 
@@ -19,14 +20,6 @@
 <a href="#admin"> Administracion </a><br><br>
 
 
-<form method="POST" action="/api/issues/">
-    {{ form.csrf_token }}
-    {{ form.name.label }} {{ form.name(size=20) }}
-    {{ form.description.label }} {{ form.description(size=200) }}
-     {{ form.order.label }} {{ form.order(size=10) }}
-
-    <input type="submit" value="">
-</form>
 
 
 

@@ -3,7 +3,7 @@ define([
 'backbone',
 'models/activityModel'
 	], function( _, Backbone , activityModel){
-	 
+
 			var activityCollection = Backbone.Collection.extend({
 
 			model:activityModel,
@@ -11,9 +11,9 @@ define([
 
 			parse: function(data){
 
-				  
 
-				
+
+
 
 				return data.items;
 			}
