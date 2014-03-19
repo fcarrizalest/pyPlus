@@ -29,7 +29,7 @@ class NewCategoryForm(CategoryFormMixin, Form):
 
 
 class UpdateCategoryForm(CategoryFormMixin, Form):
-    name = TextField('Name', validators=[Optional()])
+    name = TextField('name', validators=[Optional()])
     description = TextField('Description', validators=[Optional()])
     order = TextField('Order', validators=[Optional()])
 

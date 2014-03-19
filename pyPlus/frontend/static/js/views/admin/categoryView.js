@@ -28,7 +28,7 @@ define([
 		    },events:{
 
 				"click .editC":"editButton",
-				"click .deletecon ununc": "deleteButton"
+				"click .deleteC": "deleteButton"
 		    },
 		    deleteButton:function(){
 

@@ -34,7 +34,10 @@ class Category(CategoryJsonSerializer):
 
 
     def save(self):
-
+        
+        lista = r.hgetall("category")
+        self.id = len(lista) + 1
+         
         r.hset("category", self.id, json.dumps(self.to_json()))
 
     @classmethod
@@ -52,11 +55,11 @@ class Category(CategoryJsonSerializer):
 
         issue = json.loads(r.hget("category",id))
         t = Category()
-        t.id = issue['id'].encode('utf8')
+        t.id = issue['id']
         t.description = issue['description'].encode('utf8')
         t.name = issue['name'].encode('utf8')
         t.order = issue['order'].encode('utf8')
-
+        
 
         return t
 
