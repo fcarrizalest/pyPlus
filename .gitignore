@@ -1,9 +1,4 @@
-.p12
 *.p12
 data.json
 *.pydevproject
-*.pydevproject
-.pydevproject
-*.pyc
-
 *.pyc
