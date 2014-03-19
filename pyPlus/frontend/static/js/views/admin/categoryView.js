@@ -43,8 +43,6 @@ define([
 		    editButton:function(){
 
 
-
-
 				this.model.set( "name" ,  $(this.el).find("input")[0].value);
 				var csrf_token = $('meta[name=csrf_token]').attr("content");
 
