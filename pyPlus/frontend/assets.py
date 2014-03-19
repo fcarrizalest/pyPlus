@@ -1,5 +1,6 @@
 from flask_assets import Environment, Bundle
 
+
 css_all = Bundle("css/estilos.css", filters="cssmin", output="css/estilos.min.css")
 
 js_main = Bundle("js/libs/require/require.js", filters="jsmin", output="require.js")
