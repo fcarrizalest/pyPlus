@@ -52,11 +52,23 @@ class Dossier():
         self.__object__ = objectT
     
     def new(self):
+        driveServices = DriveServices()
+        folde = driveServices.create_folder( self.__object__.name, self.__object__.description, self.__object__.issue)
+        return folde
+
+    def update(self):
+        
+        driveServices = DriveServices()
+
+        aa = driveServices.update_folder(self.__object__.id, self.__object__.name, self.__object__.description)
+
+        
         pass
     def save(self):
-        pass
-    def all(self ):
-        pass
+        driveServices = DriveServices()
+        folde = driveServices.create_folder( self.__object__.name, self.__object__.description, self.__object__.issue)
+        return folde
+
     def get(self):
         pass
     def delete(self):
@@ -82,7 +94,7 @@ class Objects(ObjectJsonSerializer):
         if self._typeO == None:
             self._typeO = "Dossier"
             self.strategy = Dossier(self)
-        
+
         return self._typeO
     
     
