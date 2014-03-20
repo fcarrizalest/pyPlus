@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import os, sys; sys.path.append(os.path.dirname(__file__))
+
 from werkzeug.serving import run_simple
 from werkzeug.wsgi import DispatcherMiddleware
 

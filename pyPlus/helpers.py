@@ -1,6 +1,7 @@
 import importlib
 import pkgutil
-
+import os
+import os.path
 from apiclient import errors
 from apiclient.discovery import build
 from apiclient.http import MediaFileUpload
@@ -20,7 +21,10 @@ class DriveServices:
 
 
     def createDriveServices(self ):
-        f = file(SERVICE_ACCOUNT_PKCS12_FILE_PATH, 'rb')
+        current_dir =os.path.dirname(__file__)
+        parent = os.path.join(current_dir, "../"+SERVICE_ACCOUNT_PKCS12_FILE_PATH) # construct a path to its parent
+
+        f = file(parent, 'rb')
         key = f.read()
         f.close()
 
