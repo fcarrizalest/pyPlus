@@ -33,6 +33,17 @@ class DriveServices:
         http = credentials.authorize(http)
 
         return build('drive', 'v2', http=http)
+    
+    def get_file(self , file_id ):
+        try:
+            fileT = self.service.files().get(fileId=file_id).execute()
+            return fileT
+        
+        except errors.HttpError, error:
+            print 'An error occured: %s' % error
+        return None
+    
+    
     def create_folder(self , title, description, parent_id ):
         body = {'title': title,'description': description,'mimeType': "application/vnd.google-apps.folder"}
         if parent_id:
@@ -46,10 +57,10 @@ class DriveServices:
         return None
 
 
-    def insert_file(self , title, description, parent_id, mime_type, filename):
+    def insert_file(self , title, description, parent_id, filename):
 
-        media_body = MediaFileUpload(filename, mimetype=mime_type, resumable=True)
-        body = {'title': title,'description': description,'mimeType': mime_type}
+        media_body = MediaFileUpload(filename, resumable=True)
+        body = {'title': title,'description': description}
         if parent_id:
             body['parents'] = [{'id': parent_id}]
         try:
@@ -59,7 +70,6 @@ class DriveServices:
         except errors.HttpError, error:
             print 'An error occured: %s' % error
         return None
-
 
 
     def update_folder(self, file_id, new_title, new_description, new_revision = True):

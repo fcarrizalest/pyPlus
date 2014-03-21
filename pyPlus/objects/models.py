@@ -2,9 +2,10 @@ import json
 
 from ..core import r
 from ..helpers import JsonSerializer, DriveServices
-
+from ..settings import FILESTORETMP
 
 class ObjectJsonSerializer(JsonSerializer):
+    __json_hidden__ = ['strategy']
     pass
 
 class Article():
@@ -34,8 +35,21 @@ class Image():
         
     def new(self):
         pass
-    def save(self):
-        pass
+    def save(self , parent_id = None , filename = None ):
+        driveServices = DriveServices()
+        
+        if parent_id == None:
+            parent_id = self.__object__.issue
+        
+        if filename == None:
+            filename = "image.png"
+        filename = FILESTORETMP + filename
+        
+        fileT = driveServices.insert_file( self.__object__.name , 
+                                   self.__object__.description, 
+                                   parent_id, filename)
+        self.__object__.id = fileT['id']
+        
     def all(self ):
         pass
     def get(self):
@@ -53,24 +67,36 @@ class Dossier():
     
     def new(self):
         driveServices = DriveServices()
-        folde = driveServices.create_folder( self.__object__.name, self.__object__.description, self.__object__.issue)
+        folde = driveServices.create_folder( self.__object__.name, 
+                                             self.__object__.description, 
+                                             self.__object__.issue)
         return folde
 
     def update(self):
         
         driveServices = DriveServices()
 
-        aa = driveServices.update_folder(self.__object__.id, self.__object__.name, self.__object__.description)
-
-        
-        pass
+        folde = driveServices.update_folder(self.__object__.id, 
+                                            self.__object__.name, 
+                                            self.__object__.description)
+        return folde
+    
     def save(self):
         driveServices = DriveServices()
-        folde = driveServices.create_folder( self.__object__.name, self.__object__.description, self.__object__.issue)
+        folde = driveServices.create_folder( self.__object__.name, 
+                                             self.__object__.description, 
+                                             self.__object__.issue)
+        
+        self.__object__.id = folde['id']
+        
         return folde
 
     def get(self):
-        pass
+        driveServices = DriveServices()
+        
+        fileT = driveServices.get_file(self.__object__.id)
+        return fileT
+        
     def delete(self):
         pass
 
@@ -121,23 +147,23 @@ class Objects(ObjectJsonSerializer):
          
          
     
-    def __init__(self , id = None , name = None , typeO = None, 
+    def __init__(self , id = None , name = None , _typeO = None, 
                  description = None, issue =None , category = None, 
-                 elements = None , path = None , status = None ):
+                 elemets = None , path = None , status = None ):
         
         
         self.id = id
         self.name = name
-        self.typeO = typeO
+        self.typeO = _typeO
         self.description = description
         self.issue = issue
         self.category = category
-        self.elemets = elements
+        self.elemets = elemets
         self.path = path
         self.status = status
 
     @classmethod
-    def new(self , id = None , name = None , typeO = None, 
+    def new(self , id = None , name = None , _typeO = None, 
                  description = None, issue =None , category = None, 
                  elements = None , path = None , status = None ):
 
@@ -146,7 +172,7 @@ class Objects(ObjectJsonSerializer):
        
         t.id = id
         t.name = name
-        t.typeO = typeO
+        t.typeO = _typeO
         t.description = description
         t.issue = issue
         t.category = category
@@ -159,14 +185,14 @@ class Objects(ObjectJsonSerializer):
     
 
     def save(self):
-        print "Entramos a Issue model save"
+        print "Entramos a Object model save"
         driveServices = DriveServices()
         #crear un achivo para subirlo...
         # tomar la categoria,
         
-        folde = driveServices.create_folder( self.name, self.description, "root")
-        self.id = folde['id'].encode('utf8')
-        r.hset("issue", self.id, json.dumps(self.to_json()))
+        self.strategy.save()
+        
+        r.hset("object", self.id, json.dumps(self.to_json()))
 
     @classmethod
     def all(self):
@@ -181,12 +207,9 @@ class Objects(ObjectJsonSerializer):
     @classmethod
     def get(self , id):
 
-        issue = json.loads(r.hget("issue",id))
-        t = Objects()
-        t.id = issue['id'].encode('utf8')
-        t.description = issue['description'].encode('utf8')
-        t.name = issue['name'].encode('utf8')
-        t.order = issue['order'].encode('utf8')
+        issue = json.loads(r.hget("object",id))
+        print issue
+        t = Objects(**issue)
 
             
         return t
@@ -200,11 +223,11 @@ class Objects(ObjectJsonSerializer):
         aa = driveServices.update_folder(self.id, self.name, self.description)
 
 
-        r.hset("issue", self.id, json.dumps(self.to_json()))
+        r.hset("object", self.id, json.dumps(self.to_json()))
 
         return self
 
-
+    @classmethod
     def delete(self , id=None):
         driveServices = DriveServices()
 
@@ -213,7 +236,7 @@ class Objects(ObjectJsonSerializer):
 
         if self.id != None:
             driveServices.delete_file(self.id)
-            r.hdel("issue" ,self.id )
+            r.hdel("object" ,self.id )
             return True
 
         return False

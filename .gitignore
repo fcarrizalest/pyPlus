@@ -2,3 +2,4 @@
 data.json
 *.pydevproject
 *.pyc
+pyPlus/settings.py
