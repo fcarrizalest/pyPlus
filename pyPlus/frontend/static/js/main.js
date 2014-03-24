@@ -11,6 +11,7 @@ require.config({
     underscore: 'libs/underscore/underscore',
     backbone: 'libs/backbone/backbone',
     mustache: 'libs/mustache/mustache',
+    dropzone: 'vendor/dropzone.min',
     templates: '../templates'
   }
 

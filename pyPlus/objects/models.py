@@ -41,9 +41,7 @@ class Image():
         if parent_id == None:
             parent_id = self.__object__.issue
         
-        if filename == None:
-            filename = "image.png"
-        filename = FILESTORETMP + filename
+        filename = FILESTORETMP + self.__object__.path
         
         fileT = driveServices.insert_file( self.__object__.name , 
                                    self.__object__.description, 
@@ -100,7 +98,7 @@ class Dossier():
     def delete(self):
         pass
 
-class Objects(ObjectJsonSerializer):
+class Object(ObjectJsonSerializer):
 
     id = None
     name = None
@@ -165,18 +163,19 @@ class Objects(ObjectJsonSerializer):
     @classmethod
     def new(self , id = None , name = None , _typeO = None, 
                  description = None, issue =None , category = None, 
-                 elements = None , path = None , status = None ):
+                 elemets = None , path = None , status = None ):
 
-        t = Objects()
+        t = Object()
 
-       
+        print "Entramos a new "
+        print _typeO
         t.id = id
         t.name = name
         t.typeO = _typeO
         t.description = description
         t.issue = issue
         t.category = category
-        t.elemets = elements
+        t.elemets = elemets
         t.path = path
         t.status = status
 
@@ -189,14 +188,16 @@ class Objects(ObjectJsonSerializer):
         driveServices = DriveServices()
         #crear un achivo para subirlo...
         # tomar la categoria,
-        
+        print "tipo"
+        print self.typeO 
         self.strategy.save()
         
         r.hset("object", self.id, json.dumps(self.to_json()))
+        return self
 
     @classmethod
     def all(self):
-        lista = r.hgetall("issue")
+        lista = r.hgetall("object")
         l = []
         for issue in lista:
             i = json.loads( lista[issue])

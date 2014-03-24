@@ -2,17 +2,18 @@ define([
 	'jquery',
 	'underscore',
 	'backbone',
-	'text!templates/home/homeTemplate.html',
+	'text!templates/menu/menuTemplate.html',
+	'views/menu/menuItemsView',
 	
 
-	] , function($,_ , Backbone,homeTemplate  ) {   
+	] , function($,_ , Backbone,homeTemplate ,menuItemsView ) {   
 
 
 
 
 		var homeView = Backbone.View.extend( {
 
-				el:$("#page"),
+				el:$("#menu"),
 				initialize: function(){
 
 					//_.bindAll(this)
@@ -26,8 +27,9 @@ define([
 
 					this.$el.html( homeTemplate );
 
-					 $(document).foundation();
-
+					var $menuItemsView = new menuItemsView( { el:$("#dMenu")   , collection: this.$menuCollection })
+					
+					
 
 				},
 				events:{
