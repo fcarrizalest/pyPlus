@@ -3,3 +3,14 @@ data.json
 *.pydevproject
 *.pyc
 pyPlus/settings.py
+pyPlus/frontend/static/js/bun.js
+
+pyPlus/settings.pyc
+
+pyPlus/settings.py
+
+pyPlus/helpers.pyc
+
+pyPlus/helpers.pyc
+
+pyPlus/frontend/assets.pyc

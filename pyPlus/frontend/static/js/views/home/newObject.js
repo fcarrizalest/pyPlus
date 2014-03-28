@@ -45,7 +45,7 @@ define([
 			
 			if( ( this.type == "Image" )  || (this.type == "Video" )){
 				var $dropzone = new dropzone("#uploadZone",{
-					  url:"/api/objects/upload",
+					  url:"./api/objects/upload",
 					  
 					  paramName: "file", // The name that will be used to transfer the file
 					 
