@@ -1,7 +1,7 @@
 import os
 import os.path
 
-DEBUG = False
+DEBUG = True
 SECRET_KEY = 's-secret-key'
 # Email of the Service Account.
 SERVICE_ACCOUNT_EMAIL = '464235206596-l8h7irh5drhrmqqbugaj4atrmnurhm3c@developer.gserviceaccount.com'
