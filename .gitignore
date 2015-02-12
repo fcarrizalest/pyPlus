@@ -1,9 +1,2 @@
 *.p12
-data.json
-*.pydevproject
 *.pyc
-pyPlus/frontend/static/js/bun.js
-pyPlus/settings.pyc
-pyPlus/helpers.pyc
-pyPlus/helpers.pyc
-pyPlus/frontend/assets.pyc

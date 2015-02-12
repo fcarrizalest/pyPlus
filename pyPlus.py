@@ -1,20 +1,25 @@
 import json
+import pprint
+import random
+import string
+import os, sys; sys.path.append(os.path.dirname(__file__))
 
-from apiclient.discovery import build
-from flask import Flask, make_response, render_template, request, session
+from flask import Flask
+from flask import make_response
+from flask import render_template
+from flask import request
+from flask import session 
 import httplib2
 from oauth2client.client import SignedJwtAssertionCredentials
 from simplekv.memory import DictStore
-
+from apiclient.discovery import build
 from driveServices import DriveServices
 from flaskext.kvsession import KVSessionExtension
 
 
 APPLICATION_NAME = 'Google Python Quickstart'
 
-app = Flask(__name__,instance_relative_config=True)
-app.config.from_pyfile('settings.cfg', silent=True)
-
+app = Flask(__name__)
 
 
 # See the simplekv docume ntation for details
@@ -29,131 +34,134 @@ KVSessionExtension(store, app)
 SERVICE_ACCOUNT_EMAIL = '464235206596-l8h7irh5drhrmqqbugaj4atrmnurhm3c@developer.gserviceaccount.com'
 
 # Path to the Service Account's Private Key file.
-SERVICE_ACCOUNT_PKCS12_FILE_PATH = '0ab8bdfaa0f13511e3d404377a363ae160eca697-privatekey.p12'
+SERVICE_ACCOUNT_PKCS12_FILE_PATH = '/var/www/html/pyPlus/pyTest-522b472722f2.p12'
 
 
 def createDriveService():
-    f = file(SERVICE_ACCOUNT_PKCS12_FILE_PATH, 'rb')
-    key = f.read()
-    f.close()
-    credentials = SignedJwtAssertionCredentials(SERVICE_ACCOUNT_EMAIL, key,"https://www.googleapis.com/auth/plus.login")
-    http = httplib2.Http()
-    http = credentials.authorize(http)
-    return build('plus', 'v1', http = http)
+  """Builds and returns a Drive service object authorized with the given service  account.
+
+  Returns:
+	Drive service object.
+  """
+  f = file(SERVICE_ACCOUNT_PKCS12_FILE_PATH, 'rb')
+  key = f.read()
+  f.close()
+
+  credentials = SignedJwtAssertionCredentials(SERVICE_ACCOUNT_EMAIL, key,"https://www.googleapis.com/auth/plus.login")
+  http = httplib2.Http() 
+  http = credentials.authorize(http)
+
+  return build('plus', 'v1', http = http)
 
 
 
 @app.route('/', methods=['GET'])
 def index():
 
-    response = make_response(render_template('index.html') )
-    response.headers['Content-Type'] = 'text/html'
+	response = make_response(render_template('index.html') )
+	response.headers['Content-Type'] = 'text/html'
 
 
 
-    return response
+	return response
 
 
 @app.route('/drive')
 def drive():
 
-    driveServices = DriveServices()
-    services = driveServices.createDriveServices( SERVICE_ACCOUNT_EMAIL , SERVICE_ACCOUNT_PKCS12_FILE_PATH)
-    listFiles = driveServices.retrieve_all_files(services)
-    if len(listFiles) == 0:
-        print "nada"
-        print "nada"
-        print listFiles
-        title = "data.json"
-        description = "descriptio"
-        parent_id = "root"
-        mime_type = "application/json"
-        filename = "data.json"
-        driveServices.insert_file(services, title, description, parent_id, mime_type, filename)
-    else:
-        print "Encontre archivos "
-        print len(listFiles)
+	driveServices = DriveServices()
+	services = driveServices.createDriveServices( SERVICE_ACCOUNT_EMAIL , SERVICE_ACCOUNT_PKCS12_FILE_PATH)
+	listFiles = driveServices.retrieve_all_files(services)
+	if len(listFiles) == 0:
+		print "nada"
+		print "nada"
+		print listFiles
+		title = "data.json" 
+		description = "descriptio"
+		parent_id = "root"
+		mime_type = "application/json"
+		filename = "data.json"
+		driveServices.insert_file(services, title, description, parent_id, mime_type, filename)
+	else:
+		print "Encontre archivos "
+		print len(listFiles)
 
-    response = make_response(render_template('indexdrive.html') )
-    return response
+	response = make_response(render_template('indexdrive.html') )
+	return response
 
 
 @app.route('/activity/<idA>')
 def activity(idA):
-    service = createDriveService()
-    activities_resource = service.activities()
-    activity = activities_resource.get( activityId=idA).execute()
-    response = make_response( json.dumps(activity) , 200)
-    response.headers['Content-Type'] = 'application/json'
-    return  response
+	service = createDriveService()
+	activities_resource = service.activities()
+	activity = activities_resource.get( activityId=idA).execute()
+	response = make_response( json.dumps(activity) , 200)
+	response.headers['Content-Type'] = 'application/json'
+	return  response
 
 
 @app.route('/activity/<id>/comments')
-def activity_comments(idC):
-    service = createDriveService()
-    comments_resource = service.comments()
-    comments_document = comments_resource.list( maxResults=100,activityId=idC).execute()
+def activity_comments(id):
+	service = createDriveService()
+	comments_resource = service.comments()
+	comments_document = comments_resource.list( maxResults=100,activityId=id).execute()
 
-    response = make_response( json.dumps(comments_document) , 200)
-    response.headers['Content-Type'] = 'application/json'
-    return  response
+	response = make_response( json.dumps(comments_document) , 200)
+	response.headers['Content-Type'] = 'application/json'
+	return  response
 
 @app.route('/activities/<id>' )
-def activities_user(idA):
-    service = createDriveService()
-    activities_resource = service.activities()
-    request = activities_resource.list( userId=idA, maxResults= 23 , collection='public')
-    activities_document = request.execute()
+def activities_user(id):
+	service = createDriveService()
+	activities_resource = service.activities()
+	request = activities_resource.list( userId=id, maxResults= 23 , collection='public')
+	activities_document = request.execute()
 
-    response = make_response( json.dumps(activities_document) , 200)
-    response.headers['Content-Type'] = 'application/json'
-    return  response
+	response = make_response( json.dumps(activities_document) , 200)
+	response.headers['Content-Type'] = 'application/json'
+	return  response
 
 
 @app.route( '/search/p/<search>' )
 def search_user(search):
 
-    service = createDriveService()
-    people_resource = service.people()
-    people_document = people_resource.search(  maxResults = 50 , query=search  ) . execute()
+	service = createDriveService()
+	people_resource = service.people()
+	people_document = people_resource.search(  maxResults = 50 , query=search  ) . execute()
 
-    response = make_response( json.dumps(people_document) , 200)
-    response.headers['Content-Type'] = 'application/json'
-    return  response
+	response = make_response( json.dumps(people_document) , 200)
+	response.headers['Content-Type'] = 'application/json'
+	return  response
 
 @app.route('/', methods=['GET'])
 def d():
+	
+	service =  createDriveService()
 
-    service =  createDriveService()
+	activities_resource = service.activities()
+	request = activities_resource.list( userId='108250612542617275436' , collection='public' , maxResults=20 )
+	L = []
+	returnD = {}
 
-    activities_resource = service.activities()
-    request = activities_resource.list( userId='108250612542617275436' , collection='public' , maxResults=20 )
-    L = []
-    returnD = {}
+	while request != None:
+		
+		activities_document = request.execute()
+		
+		if 'items' in activities_document:
+			
+			returnD['nextPageToken'] = activities_document['nextPageToken']
 
-    while request != None:
+			for activity in activities_document['items']:
 
-        activities_document = request.execute()
+				L.append(activity)
 
-        if 'items' in activities_document:
+		request = None #"""request = service.activities().list_next(request, activities_document)"""
+		returnD['items'] =  L
 
-            returnD['nextPageToken'] = activities_document['nextPageToken']
-
-            for activity in activities_document['items']:
-
-                L.append(activity)
-
-        request = None #"""request = service.activities().list_next(request, activities_document)"""
-        returnD['items'] =  L
-
-    response = make_response( json.dumps(returnD) , 200)
-    response.headers['Content-Type'] = 'application/json'
-
-    return response
-
-
+	response = make_response( json.dumps(returnD) , 200)
+	response.headers['Content-Type'] = 'application/json'
+		
+	return response
+	
 if __name__ == "__main__":
-
-
-    app.debug = True
-    app.run()
+	run_simple('0.0.0.0', 5004, application, use_reloader=True, use_debugger=False)
