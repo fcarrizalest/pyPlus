@@ -6,54 +6,35 @@
   <meta name="author" content="fcarrizalest">
   
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="{{url_for('static', filename='css/foundation.css')}}" />
 
   <script data-main="{{url_for('static', filename='js/main')}}" src="{{url_for('static', filename='js/libs/require/require.js') }}"></script>
-  <style type="text/css">
+ 	
+ 	<style type="text/css">
 
-  #activity{
- border:1px solid ;
- margin-left:210px;
- width:600px;
-
+ 	.panel {
+border-style: solid;
+border-width: 1px;
+border-color: #d8d8d8;
+margin-bottom: 1.11111rem;
+padding: 1.11111rem;
+background: #f2f2f2;
+color: #333333;
 }
 
-
-  #personas{
- border:1px solid red;
- float:left;
- font-size:.6em;
- width:200px;
-
-}
-#personas div{
- margin: 5px;
-}
-#personas img{
- 
-  width:40px;
-}
-.activityRow{
-  
- border:1px solid green;
- margin:10px;
- padding:5px;
- 
-}
-
-
-  </style>
+ 	</style>
 </head>
 <body>
 
+<div class="row">
+	<h1>TEST</h1>
 
-<h1>TEST</h1>
+	
+	<div class="row" id="page">
+	Loading...
 
-
-<div id="page">
-Loading...
-
+	</div>
 </div>
-
     
 </body> 
 </html>

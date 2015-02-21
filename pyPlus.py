@@ -2,6 +2,7 @@ import json
 import pprint
 import random
 import string
+import redis
 import os, sys; sys.path.append(os.path.dirname(__file__))
 
 from flask import Flask
@@ -15,6 +16,11 @@ from simplekv.memory import DictStore
 from apiclient.discovery import build
 from driveServices import DriveServices
 from flaskext.kvsession import KVSessionExtension
+from werkzeug.serving import run_simple
+from werkzeug.wsgi import DispatcherMiddleware
+
+r = redis.StrictRedis(host='localhost', port=6379, db=0)
+
 
 
 APPLICATION_NAME = 'Google Python Quickstart'
@@ -34,7 +40,7 @@ KVSessionExtension(store, app)
 SERVICE_ACCOUNT_EMAIL = '464235206596-l8h7irh5drhrmqqbugaj4atrmnurhm3c@developer.gserviceaccount.com'
 
 # Path to the Service Account's Private Key file.
-SERVICE_ACCOUNT_PKCS12_FILE_PATH = '/var/www/html/pyPlus/pyTest-522b472722f2.p12'
+SERVICE_ACCOUNT_PKCS12_FILE_PATH = 'pyTest-522b472722f2.p12'
 
 
 def createDriveService():
@@ -127,9 +133,15 @@ def search_user(search):
 
 	service = createDriveService()
 	people_resource = service.people()
-	people_document = people_resource.search(  maxResults = 50 , query=search  ) . execute()
+	isCache = r.get("s_" + search)
+	if(isCache):
+		jsonP = isCache
+	else:
+		people_document = people_resource.search(  maxResults = 50 , query=search  ) . execute()
+		r.set("s_"+search, json.dumps(people_document))
+		jsonP = json.dumps(people_document)
 
-	response = make_response( json.dumps(people_document) , 200)
+	response = make_response( jsonP , 200)
 	response.headers['Content-Type'] = 'application/json'
 	return  response
 
@@ -162,6 +174,8 @@ def d():
 	response.headers['Content-Type'] = 'application/json'
 		
 	return response
-	
+
+application = DispatcherMiddleware( app )
+
 if __name__ == "__main__":
-	run_simple('0.0.0.0', 5004, application, use_reloader=True, use_debugger=False)
+	run_simple('0.0.0.0', 5000, application, use_reloader=True, use_debugger=False)

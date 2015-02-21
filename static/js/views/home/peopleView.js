@@ -21,6 +21,8 @@ define([
 	    	
 	    	
 	    	 			var opView = new pView({ model: op });
+	    	 			opView.homeView = this.homeView;
+	    	 			
 	    	 			opView.activitiesView = this.activitiesView;
 	    	 			
 	    	    		this.opViews.push(opView);

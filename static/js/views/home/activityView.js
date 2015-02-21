@@ -23,10 +23,10 @@ define([
 		    		$(this.el).html (  Mustache.to_html( pTemplate , this.model.toJSON())  );
 		    		
 
-		    		$(this.el).addClass("activityRow");
+		    		$(this.el).addClass("row");
+		    		//$(this.el).addClass("panel");
 
-
-		    		$(this.el).append( this.model.get("object").content )
+		    		$(this.el).append( this.model.get("object").content  );
 
 
 
@@ -39,18 +39,14 @@ define([
 
 		    		$(this.el).append($commentsView.el);
 
-		    		console.log("commentsView.....")
-		    		console.log($commentsView);
-		    		console.log("collections commentsCollection");
-		    		$commentsCollection.url = "http://localhost:5000/activity/"+this.model.id+"/comments";
+		    		
+		    		$commentsCollection.url = "./activity/"+this.model.id+"/comments";
 		    		$commentsCollection.fetch( { reset:true, complete:function(){ 
 
-		    			console.log("It's ok... ");
-		    			console.log($commentsView);
-		    			
+		    		
 
 		    		}});
-		    		console.log($commentsCollection);	
+		    	
 
 
 		    	return this;

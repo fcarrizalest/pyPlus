@@ -9,7 +9,7 @@ define([
 ], function($, _, Backbone,Mustache,pTemplate , activityCollection){
 
 	 var pView = Backbone.View.extend({
-		    tagName: "div",
+		    tagName: "li",
 		 
 		    initialize: function(){
 		    	
@@ -19,11 +19,7 @@ define([
 		    	
 		    	$(this.el).html (  Mustache.to_html( pTemplate , this.model.toJSON())  );
 		      
-		        //var t = $(this.el).find( "div").on( 'click' , { model : this.model } ,this.clickP);
-		     	//console.log(t);
-		     // $(this.el).attr('value',
-		      //  this.model.get('id')).html(this.model.get('name'));
-		      
+		     
 		      return this;
 		    },
 		    events:{
@@ -32,13 +28,13 @@ define([
 		    
 		    clickP:function(e , model){
 		    	var self = this;
-		    	console.log("ID:")
-		    	console.log(this.model.get('id') );
+		    	
 		    	var $id  = this.model.get('id');
+
+		    	this.homeView.setPersonModel( this.model);
 		    	var $activityCollection = new activityCollection();
 
-		    	console.log( $activityCollection);
-
+		    	
 		    	$activityCollection.url = './activities/'+$id ;
 
 
@@ -46,11 +42,12 @@ define([
 
 		    	$activityCollection.fetch( { reset:true , complete:function(){
 
-		    		console.log("OK activities");
-		    		console.log(this);
+		    		
 		    		self.activitiesView.addAll();
 
 		    	}});
+
+
 		    		
 		    }
 		  });

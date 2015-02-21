@@ -18,8 +18,9 @@ define([
 	        			this.collection.bind('reset', this.addAll);
 	    			},
 	    			addOne: function(op){
-	    	
-	    	
+	    		
+	    				console.log("Actividad ");
+	    				console.log(op);
 	    	 			var opView = new activityView({ model: op });
 	    	    		this.opViews.push(opView);
 	    	    		$(this.el).append(opView.render().el);

@@ -7,13 +7,17 @@ define([
 
 
 			var peopleView = Backbone.View.extend( { 
-					tagName: "fieldset",
+					tagName: "ul",
 					events: {
 		       
 		  			},
 		  
 		  			initialize: function(){	
 	    		    	
+	    		    	$(this.el).addClass("small-block-grid-1");
+	    		    	$(this.el).addClass("medium-block-grid-2");
+	    		    	$(this.el).addClass("large-block-grid-2");
+
 	      				_.bindAll(this, 'addOne', 'addAll');
 	        			this.collection.bind('reset', this.addAll);
 	    			},
@@ -22,9 +26,7 @@ define([
 	    	
 	    	 			var opView = new commentView({ model: op });
 	    	    		this.opViews.push(opView);
-	    	    		console.log("Render subview");
-	    	    		console.log(opView.render());
-	    	    		console.log($(this));
+	    	    	
 	    	    		$(this.el).append(opView.render().el);
 	 
 	    			},

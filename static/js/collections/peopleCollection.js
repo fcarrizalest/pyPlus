@@ -12,9 +12,7 @@ define([
 
 			parse: function(data){
 
-				console.log(" Entramos a parse peopleCollection" );
-
-				console.log(data);
+			
 
 				return data.items;
 			}

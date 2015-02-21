@@ -18,11 +18,12 @@ define([
 				el:$("#page"),
 				initialize: function(){
 
-					console.log("OK ---- HomeView");
+					
 					_.bindAll(this, 'clickBuscar')
 
 					this.peopleCollection = new peopleCollection();
 
+					this.onRequest = false;
 
 
 				},
@@ -32,6 +33,8 @@ define([
 
 					var $peopleView = new peopleView({ el:$("#personas")  , collection: this.peopleCollection });
 
+					$peopleView.homeView =  this ;
+
 					var $activityCollection = new activityCollection();
 
 					var $activitiesView = new activitiesView( { el: $("#activity")  , collection: $activityCollection }) ;
@@ -39,29 +42,44 @@ define([
 					$peopleView.activitiesView = $activitiesView;
 
 
+					this.clickBuscar();
+
 				},
 				events:{
 					"click button": "clickBuscar",
 					"keyup #buscar" : "keypressBuscar"
 
 				},
+				setPersonModel: function( $model){
+
+					console.log("persona");
+					console.log( $model );
+
+				},
 				clickBuscar: function(){
 
 					console.log("Buscar........???");
 
+					this.peopleCollection.url = "./search/p/"+$("#buscar").val();
+					this.peopleCollection.fetch( {  reset:true } );
+					$("#activity").html(" ");
 				},
 				keypressBuscar:function(e){
 
-					console.log ( e.currentTarget.value );
+				
 
 
 					this.peopleCollection.url = "./search/p/"+e.currentTarget.value;
+					$self = this;
+					if( !this.onRequest){
+						$("#activity").html(" ");
+						this.onRequest = true;
+						this.peopleCollection.fetch( {  reset:true , complete:function(){
 
-					this.peopleCollection.fetch( {  reset:true , complete:function(){
+								$self.onRequest = false;
 
-						console.log( this.length);
-
-					} })
+						} })
+					}
 
 				}
 

@@ -12,7 +12,7 @@ define([
 
 
 	var commentView = Backbone.View.extend({ 
-		 	tagName: "div",
+		 	tagName: "li",
 		 
 		    initialize: function(){
 		    	
@@ -23,7 +23,7 @@ define([
 		    	$(this.el).html (  Mustache.to_html( commentTemplate , this.model.toJSON())  );
 		    		
 		    	
-		    	$(this.el).addClass("commentRow");
+		    	$(this.el).addClass("panel");
 
 		    	$(this.el).append( this.model.get("object").content );
 

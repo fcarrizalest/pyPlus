@@ -20,11 +20,12 @@ define([
 	  
 
     var app_router = new AppRouter;
-    
+    var homeView = new HomeView();
+
     app_router.on('route:defaultAction', function (actions) {
      
        // We have no matching route, lets display the home page 
-        var homeView = new HomeView();
+       
         homeView.render();     
     });
 
